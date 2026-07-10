@@ -295,6 +295,20 @@ jobs:
 
       - name: 配置 Gradle 缓存
         uses: gradle/actions/setup-gradle@v4
+      
+      - name: 调试签名配置        # ← 加在这里
+        env:
+          LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
+        run: |
+          echo "=== 解码 LOCAL_PROPERTIES ==="
+          echo "$LOCAL_PROPERTIES" | base64 -d
+          echo "=== 检查 keystore ==="
+          PASS=$(echo "$LOCAL_PROPERTIES" | base64 -d | grep KEYSTORE_PASS | cut -d'=' -f2)
+          echo "密码长度: ${#PASS}"
+          keytool -list \
+            -keystore TMessagesProj/release.keystore \
+            -storepass "$PASS" && echo "keystore验证成功" || echo "keystore验证失败"
+
 
       - name: 编译 Release APK
         env:
