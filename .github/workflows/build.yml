@@ -299,7 +299,10 @@ jobs:
       - name: 调试签名配置        # ← 加在这里
         env:
           LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
+
         run: |
+          echo "=== keystore MD5 ==="
+          md5sum TMessagesProj/release.keystore
           echo "=== 解码 LOCAL_PROPERTIES ==="
           echo "$LOCAL_PROPERTIES" | base64 -d
           echo "=== 检查 keystore ==="
